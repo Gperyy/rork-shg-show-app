@@ -48,8 +48,8 @@ function RootLayoutNav() {
 
 export default function RootLayout() {
   return (
-    <trpc.Provider client={trpcClient} queryClient={queryClient}>
-      <QueryClientProvider client={queryClient}>
+    <QueryClientProvider client={queryClient}>
+      <trpc.Provider client={trpcClient} queryClient={queryClient}>
         <UserProvider>
           <NotificationProvider>
             <GestureHandlerRootView>
@@ -57,7 +57,7 @@ export default function RootLayout() {
             </GestureHandlerRootView>
           </NotificationProvider>
         </UserProvider>
-      </QueryClientProvider>
-    </trpc.Provider>
+      </trpc.Provider>
+    </QueryClientProvider>
   );
 }
