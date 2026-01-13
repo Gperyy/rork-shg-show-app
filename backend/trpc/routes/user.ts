@@ -11,8 +11,16 @@ if (typeof window === "undefined") {
   const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
   const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
 
+  console.log("🔧 Supabase Config:", {
+    url: supabaseUrl ? "✅ Set" : "❌ Missing",
+    key: supabaseAnonKey ? "✅ Set" : "❌ Missing",
+  });
+
   if (supabaseUrl && supabaseAnonKey) {
     supabase = createClient(supabaseUrl, supabaseAnonKey);
+    console.log("✅ Supabase client initialized");
+  } else {
+    console.warn("⚠️ Supabase not configured - missing environment variables");
   }
 }
 
@@ -27,9 +35,18 @@ export const userRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input }) => {
+      console.log("📝 Register mutation called with:", {
+        name: input.name,
+        email: input.email,
+        phone: input.phone,
+      });
+
       if (!supabase) {
+        console.error("❌ Supabase is not configured");
         throw new Error("Supabase is not configured");
       }
+
+      console.log("💾 Attempting to insert into Supabase...");
 
       const { data, error } = await supabase
         .from("users")
@@ -44,6 +61,7 @@ export const userRouter = createTRPCRouter({
         .single();
 
       if (error) {
+        console.error("❌ Supabase error:", error);
         if (error.code === "23505") {
           // Unique constraint violation
           throw new Error("Email already registered");
@@ -51,6 +69,7 @@ export const userRouter = createTRPCRouter({
         throw new Error(error.message);
       }
 
+      console.log("✅ User registered successfully:", data);
       return data;
     }),
 
