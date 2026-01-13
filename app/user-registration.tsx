@@ -40,7 +40,6 @@ export default function UserRegistrationScreen() {
     }
 
     saveUser({
-      id: Date.now().toString(),
       name: name.trim(),
       email: email.trim(),
       phone: phone.trim(),
