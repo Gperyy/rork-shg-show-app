@@ -9,7 +9,6 @@
     "backend": "bun run backend/server.ts",
     "build": "expo export",
     "build:web": "expo export:web",
-    "backend": "bun run backend/server.ts",
     "lint": "expo lint",
     "android": "expo run:android",
     "ios": "expo run:ios"
