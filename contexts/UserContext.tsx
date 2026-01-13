@@ -23,22 +23,31 @@ export const [UserProvider, useUser] = createContextHook(() => {
   // Save user mutation - saves both to Supabase and local storage
   const saveUserMutation = useMutation({
     mutationFn: async (userData: Omit<User, "id" | "created_at">) => {
+      console.log("🚀 [UserContext] Attempting to save user:", userData);
+
       // First, try to save to Supabase
       try {
+        console.log("📡 [UserContext] Calling backend API...");
         const savedUser = await trpc.user.register.mutate({
           name: userData.name,
           email: userData.email,
           phone: userData.phone,
         });
 
+        console.log("✅ [UserContext] User saved to Supabase:", savedUser);
+
         // Save to local storage as well (for offline access)
         await AsyncStorage.setItem(USER_STORAGE_KEY, JSON.stringify(savedUser));
 
         return savedUser;
       } catch (error: any) {
+        console.error("❌ [UserContext] Error saving user:", error.message);
+        console.error("Full error:", error);
+
         // If network error or Supabase unavailable, still save locally
-        if (error.message.includes("Supabase is not configured")) {
-          console.warn("Supabase not configured, saving locally only");
+        if (error.message.includes("Supabase is not configured") ||
+            error.message.includes("EXPO_PUBLIC_RORK_API_BASE_URL")) {
+          console.warn("⚠️ [UserContext] Falling back to local storage only");
           const localUser = {
             ...userData,
             id: Date.now().toString(),
