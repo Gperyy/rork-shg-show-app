@@ -3,7 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
-import { trpc } from "@/lib/trpc";
+import { trpc, trpcClient } from "@/lib/trpc";
 import { User } from "@/types";
 
 const USER_STORAGE_KEY = "@shg_user_data";
@@ -28,7 +28,7 @@ export const [UserProvider, useUser] = createContextHook(() => {
       // First, try to save to Supabase
       try {
         console.log("📡 [UserContext] Calling backend API...");
-        const savedUser = await trpc.user.register.mutate({
+        const savedUser = await trpcClient.user.register.mutate({
           name: userData.name,
           email: userData.email,
           phone: userData.phone,
