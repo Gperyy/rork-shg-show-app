@@ -8,6 +8,7 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
+  ActivityIndicator,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Plane, User as UserIcon, Mail, Phone } from "lucide-react-native";
@@ -15,12 +16,66 @@ import { router } from "expo-router";
 
 import Colors from "@/constants/colors";
 import { useUser } from "@/contexts/UserContext";
+import AppleSignInButton from "@/components/AppleSignInButton";
 
 export default function UserRegistrationScreen() {
-  const { saveUser } = useUser();
+  const { saveUser, saveAppleUser, isSavingApple } = useUser();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+
+  const handleAppleSignInSuccess = async (data: {
+    appleUserId: string;
+    email: string;
+    fullName?: {
+      givenName?: string | null;
+      familyName?: string | null;
+    };
+  }) => {
+    try {
+      console.log("🍎 Processing Apple Sign In data:", data);
+
+      // Call saveAppleUser from UserContext
+      saveAppleUser(
+        {
+          appleUserId: data.appleUserId,
+          email: data.email,
+          fullName: data.fullName
+            ? {
+                givenName: data.fullName.givenName || undefined,
+                familyName: data.fullName.familyName || undefined,
+              }
+            : undefined,
+        },
+        {
+          onSuccess: () => {
+            console.log("✅ Apple Sign In successful");
+            router.replace("/(tabs)");
+          },
+          onError: (error: any) => {
+            console.error("❌ Apple Sign In error:", error);
+            Alert.alert(
+              "Hata",
+              error.message || "Apple ile giriş başarısız oldu. Lütfen tekrar deneyin."
+            );
+          },
+        }
+      );
+    } catch (error: any) {
+      console.error("❌ Apple Sign In error:", error);
+      Alert.alert(
+        "Hata",
+        error.message || "Apple ile giriş başarısız oldu. Lütfen tekrar deneyin."
+      );
+    }
+  };
+
+  const handleAppleSignInError = (error: Error) => {
+    console.error("❌ Apple Sign In error:", error);
+    if (!error.message.includes("canceled")) {
+      Alert.alert("Hata", "Apple ile giriş başarısız oldu. Lütfen tekrar deneyin.");
+    }
+  };
 
   const handleSubmit = () => {
     if (!name.trim()) {
@@ -120,6 +175,26 @@ export default function UserRegistrationScreen() {
               <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
                 <Text style={styles.submitButtonText}>Devam Et</Text>
               </TouchableOpacity>
+
+              {/* Divider */}
+              <View style={styles.dividerContainer}>
+                <View style={styles.dividerLine} />
+                <Text style={styles.dividerText}>veya</Text>
+                <View style={styles.dividerLine} />
+              </View>
+
+              {/* Apple Sign In Button */}
+              {isSavingApple ? (
+                <View style={styles.loadingContainer}>
+                  <ActivityIndicator size="large" color={Colors.accentLight} />
+                  <Text style={styles.loadingText}>Apple ile giriş yapılıyor...</Text>
+                </View>
+              ) : (
+                <AppleSignInButton
+                  onSuccess={handleAppleSignInSuccess}
+                  onError={handleAppleSignInError}
+                />
+              )}
             </View>
           </View>
         </KeyboardAvoidingView>
@@ -214,5 +289,29 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "700",
     color: Colors.white,
+  },
+  dividerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: 16,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: "rgba(59, 130, 246, 0.3)",
+  },
+  dividerText: {
+    color: Colors.textSecondary,
+    paddingHorizontal: 16,
+    fontSize: 14,
+  },
+  loadingContainer: {
+    alignItems: "center",
+    paddingVertical: 20,
+  },
+  loadingText: {
+    color: Colors.textSecondary,
+    marginTop: 12,
+    fontSize: 14,
   },
 });
