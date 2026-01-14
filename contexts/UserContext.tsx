@@ -67,6 +67,43 @@ export const [UserProvider, useUser] = createContextHook(() => {
     },
   });
 
+  // Save user with Apple Sign In mutation
+  const saveAppleUserMutation = useMutation({
+    mutationFn: async (appleData: {
+      appleUserId: string;
+      email: string;
+      fullName?: {
+        givenName?: string;
+        familyName?: string;
+      };
+    }) => {
+      console.log("🍎 [UserContext] Attempting to save Apple user:", appleData);
+
+      try {
+        console.log("📡 [UserContext] Calling Apple Sign In API...");
+        const savedUser = await trpcClient.user.registerOrLoginWithApple.mutate({
+          appleUserId: appleData.appleUserId,
+          email: appleData.email,
+          fullName: appleData.fullName,
+        });
+
+        console.log("✅ [UserContext] Apple user saved to Supabase:", savedUser);
+
+        // Save to local storage as well (for offline access)
+        await AsyncStorage.setItem(USER_STORAGE_KEY, JSON.stringify(savedUser));
+
+        return savedUser;
+      } catch (error: any) {
+        console.error("❌ [UserContext] Error saving Apple user:", error.message);
+        console.error("Full error:", error);
+        throw error;
+      }
+    },
+    onSuccess: (data) => {
+      setUser(data);
+    },
+  });
+
   // Clear user mutation
   const clearUserMutation = useMutation({
     mutationFn: async () => {
@@ -88,7 +125,9 @@ export const [UserProvider, useUser] = createContextHook(() => {
     user,
     isLoading: userQuery.isLoading,
     saveUser: saveUserMutation.mutate,
+    saveAppleUser: saveAppleUserMutation.mutate,
     clearUser: clearUserMutation.mutate,
     isSaving: saveUserMutation.isPending,
+    isSavingApple: saveAppleUserMutation.isPending,
   };
 });
