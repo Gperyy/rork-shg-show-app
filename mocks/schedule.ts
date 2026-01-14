@@ -4,11 +4,11 @@ export const SCHEDULE_DATA: Show[] = [
   {
     id: "test1",
     title: "F-16 Solo Gösterisi",
-    time: "00:31",
-    endTime: "00:32",
+    time: "21:22",
+    endTime: "21:24",
     description: "Test gösterisi 1",
     category: "Demo",
-    date: "2026-01-11",
+    date: "2026-01-13",
   },
   {
     id: "test2",
