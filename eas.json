@@ -17,6 +17,9 @@
       }
     },
     "production": {
+      "env": {
+        "EXPO_PUBLIC_RORK_API_BASE_URL": "https://rork-shg-show-app.vercel.app"
+      },
       "ios": {
         "simulator": false
       }
