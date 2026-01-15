@@ -17,7 +17,10 @@
       "supportsTablet": false,
       "bundleIdentifier": "app.rork.shg-show-app",
       "usesAppleSignIn": true,
-      "buildNumber": "3"
+      "buildNumber": "4",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -54,6 +57,14 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": "https://rork.com/"
+      },
+      "eas": {
+        "projectId": "b4034402-9537-4679-9030-323cdb071258"
+      }
     }
   }
 }
