@@ -1,6 +1,11 @@
 {
   "buildCommand": "cd backend && echo 'Backend ready'",
   "outputDirectory": "api",
+  "functions": {
+    "api/index.ts": {
+      "runtime": "nodejs20.x"
+    }
+  },
   "rewrites": [
     {
       "source": "/(.*)",
