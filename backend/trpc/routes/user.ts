@@ -160,7 +160,7 @@ export const userRouter = createTRPCRouter({
     .input(
       z.object({
         appleUserId: z.string().min(1, "Apple user ID is required"),
-        email: z.string().optional(),
+        email: z.string().optional(), // Accept any string including empty
         fullName: z
           .object({
             givenName: z.string().optional(),
