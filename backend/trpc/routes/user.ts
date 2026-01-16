@@ -47,6 +47,13 @@ export const userRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input, ctx }) => {
+      console.log("🔍 DEBUG: Full context object:", {
+        ctxKeys: Object.keys(ctx),
+        hasEnv: 'env' in ctx,
+        envValue: ctx.env,
+        fullCtx: ctx
+      });
+
       const supabase = getSupabase(ctx.env);
       console.log("📝 Register mutation called with:", {
         name: input.name,
@@ -184,6 +191,13 @@ export const userRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input, ctx }) => {
+      console.log("🔍 DEBUG Apple: Full context object:", {
+        ctxKeys: Object.keys(ctx),
+        hasEnv: 'env' in ctx,
+        envValue: ctx.env,
+        fullCtx: ctx
+      });
+
       const supabase = getSupabase(ctx.env);
       console.log("🍎 Apple Sign In mutation called with:", {
         appleUserId: input.appleUserId,
