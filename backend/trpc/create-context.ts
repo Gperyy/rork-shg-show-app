@@ -1,9 +1,15 @@
 import { initTRPC } from "@trpc/server";
 import { FetchCreateContextFnOptions } from "@trpc/server/adapters/fetch";
 
-export const createContext = async (opts: FetchCreateContextFnOptions) => {
+import { Context as HonoContext } from "hono"; // Import Hono Context
+
+export const createContext = async (
+  opts: FetchCreateContextFnOptions,
+  c: HonoContext
+) => {
   return {
     req: opts.req,
+    env: c.env as Record<string, string>, // expose env to tRPC context
   };
 };
 
