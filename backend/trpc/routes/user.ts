@@ -7,8 +7,9 @@ const getSupabase = (env: Record<string, string>) => {
   console.log("🔍 getSupabase called with env:", {
     envExists: !!env,
     envKeys: env ? Object.keys(env) : [],
-    hasUrl: env && !!env.EXPO_PUBLIC_SUPABASE_URL,
-    hasKey: env && !!env.EXPO_PUBLIC_SUPABASE_ANON_KEY
+    envValues: env || {},
+    hasUrl: env && !!env.EXPO_PUBLIC_SUPABASE_URL && env.EXPO_PUBLIC_SUPABASE_URL !== "",
+    hasKey: env && !!env.EXPO_PUBLIC_SUPABASE_ANON_KEY && env.EXPO_PUBLIC_SUPABASE_ANON_KEY !== ""
   });
 
   if (!env) {
@@ -19,11 +20,13 @@ const getSupabase = (env: Record<string, string>) => {
   const supabaseUrl = env.EXPO_PUBLIC_SUPABASE_URL;
   const supabaseAnonKey = env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
 
-  if (!supabaseUrl || !supabaseAnonKey) {
+  // Check for empty strings as well
+  if (!supabaseUrl || supabaseUrl === "" || !supabaseAnonKey || supabaseAnonKey === "") {
     console.error("❌ Supabase config missing in getSupabase:", {
-      url: supabaseUrl ? "Set" : "Missing",
-      key: supabaseAnonKey ? "Set" : "Missing",
-      allEnvKeys: Object.keys(env)
+      url: supabaseUrl && supabaseUrl !== "" ? "Set" : "Missing/Empty",
+      key: supabaseAnonKey && supabaseAnonKey !== "" ? "Set" : "Missing/Empty",
+      urlValue: supabaseUrl || "(empty)",
+      keyValue: supabaseAnonKey ? "[REDACTED]" : "(empty)"
     });
     return null;
   }
