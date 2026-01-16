@@ -3,9 +3,18 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "../create-context";
 
 // Helper to get Supabase client
-// Helper to get Supabase client
 const getSupabase = (env: Record<string, string>) => {
-  if (!env) return null;
+  console.log("🔍 getSupabase called with env:", {
+    envExists: !!env,
+    envKeys: env ? Object.keys(env) : [],
+    hasUrl: env && !!env.EXPO_PUBLIC_SUPABASE_URL,
+    hasKey: env && !!env.EXPO_PUBLIC_SUPABASE_ANON_KEY
+  });
+
+  if (!env) {
+    console.error("❌ No env object provided to getSupabase");
+    return null;
+  }
 
   const supabaseUrl = env.EXPO_PUBLIC_SUPABASE_URL;
   const supabaseAnonKey = env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
@@ -13,11 +22,13 @@ const getSupabase = (env: Record<string, string>) => {
   if (!supabaseUrl || !supabaseAnonKey) {
     console.error("❌ Supabase config missing in getSupabase:", {
       url: supabaseUrl ? "Set" : "Missing",
-      key: supabaseAnonKey ? "Set" : "Missing"
+      key: supabaseAnonKey ? "Set" : "Missing",
+      allEnvKeys: Object.keys(env)
     });
     return null;
   }
 
+  console.log("✅ Supabase client created successfully");
   const { createClient } = require("@supabase/supabase-js");
   return createClient(supabaseUrl, supabaseAnonKey);
 };

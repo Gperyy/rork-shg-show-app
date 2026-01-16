@@ -7,9 +7,19 @@ export const createContext = async (
   opts: FetchCreateContextFnOptions,
   c?: HonoContext
 ) => {
+  const env = (c?.env || {}) as Record<string, string>;
+
+  console.log("🔧 createContext called:", {
+    hasHonoContext: !!c,
+    hasEnv: !!c?.env,
+    envKeys: Object.keys(env),
+    hasSupabaseUrl: !!env.EXPO_PUBLIC_SUPABASE_URL,
+    hasSupabaseKey: !!env.EXPO_PUBLIC_SUPABASE_ANON_KEY
+  });
+
   return {
     req: opts.req,
-    env: (c?.env || {}) as Record<string, string>,
+    env,
   };
 };
 
