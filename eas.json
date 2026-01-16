@@ -24,5 +24,14 @@
         "simulator": false
       }
     }
+  },
+  "submit": {
+    "production": {
+      "ios": {
+        "appleId": "gulperiozblt@gmail.com",
+        "ascAppId": "6740697960",
+        "appleTeamId": "3AZ7X89KV7"
+      }
+    }
   }
 }
