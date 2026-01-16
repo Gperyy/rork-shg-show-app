@@ -1,6 +1,5 @@
 {
   "buildCommand": "cd backend && echo 'Backend ready'",
-  "outputDirectory": "api",
   "rewrites": [
     {
       "source": "/(.*)",
