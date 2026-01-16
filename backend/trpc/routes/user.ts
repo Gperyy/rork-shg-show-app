@@ -2,27 +2,24 @@ import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "../create-context";
 
-// Supabase will be imported on the server side only
-let supabase: any;
+// Helper to get Supabase client
+const getSupabase = () => {
+  if (typeof window !== "undefined") return null;
 
-// Initialize Supabase client (server-side only)
-if (typeof window === "undefined") {
-  const { createClient } = require("@supabase/supabase-js");
   const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
   const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
 
-  console.log("🔧 Supabase Config:", {
-    url: supabaseUrl ? "✅ Set" : "❌ Missing",
-    key: supabaseAnonKey ? "✅ Set" : "❌ Missing",
-  });
-
-  if (supabaseUrl && supabaseAnonKey) {
-    supabase = createClient(supabaseUrl, supabaseAnonKey);
-    console.log("✅ Supabase client initialized");
-  } else {
-    console.warn("⚠️ Supabase not configured - missing environment variables");
+  if (!supabaseUrl || !supabaseAnonKey) {
+    console.error("❌ Supabase config missing in getSupabase:", {
+      url: supabaseUrl ? "Set" : "Missing",
+      key: supabaseAnonKey ? "Set" : "Missing"
+    });
+    return null;
   }
-}
+
+  const { createClient } = require("@supabase/supabase-js");
+  return createClient(supabaseUrl, supabaseAnonKey);
+};
 
 export const userRouter = createTRPCRouter({
   // Register a new user
@@ -35,6 +32,7 @@ export const userRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input }) => {
+      const supabase = getSupabase();
       console.log("📝 Register mutation called with:", {
         name: input.name,
         email: input.email,
@@ -77,6 +75,7 @@ export const userRouter = createTRPCRouter({
   getByEmail: publicProcedure
     .input(z.object({ email: z.string().email() }))
     .query(async ({ input }) => {
+      const supabase = getSupabase();
       if (!supabase) {
         throw new Error("Supabase is not configured");
       }
@@ -109,6 +108,7 @@ export const userRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input }) => {
+      const supabase = getSupabase();
       if (!supabase) {
         throw new Error("Supabase is not configured");
       }
@@ -133,6 +133,7 @@ export const userRouter = createTRPCRouter({
   getById: publicProcedure
     .input(z.object({ id: z.string().uuid() }))
     .query(async ({ input }) => {
+      const supabase = getSupabase();
       if (!supabase) {
         throw new Error("Supabase is not configured");
       }
@@ -168,6 +169,7 @@ export const userRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input }) => {
+      const supabase = getSupabase();
       console.log("🍎 Apple Sign In mutation called with:", {
         appleUserId: input.appleUserId,
         email: input.email,
