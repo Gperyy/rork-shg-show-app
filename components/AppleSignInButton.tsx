@@ -5,7 +5,7 @@ import * as AppleAuthentication from "expo-apple-authentication";
 interface AppleSignInButtonProps {
   onSuccess: (data: {
     appleUserId: string;
-    email: string;
+    email?: string;
     fullName?: {
       givenName?: string | null;
       familyName?: string | null;
@@ -41,20 +41,15 @@ export default function AppleSignInButton({
 
       // Apple only provides email and fullName on the first sign-in
       // On subsequent sign-ins, only the user ID is provided
-      if (!email) {
-        throw new Error(
-          "Email not provided by Apple. This might be a subsequent sign-in. Please contact support."
-        );
-      }
 
       onSuccess({
         appleUserId,
-        email,
+        email: email || "", // Pass empty string if email is missing
         fullName: fullName
           ? {
-              givenName: fullName.givenName,
-              familyName: fullName.familyName,
-            }
+            givenName: fullName.givenName,
+            familyName: fullName.familyName,
+          }
           : undefined,
       });
     } catch (error: any) {

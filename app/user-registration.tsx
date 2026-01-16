@@ -26,7 +26,7 @@ export default function UserRegistrationScreen() {
 
   const handleAppleSignInSuccess = async (data: {
     appleUserId: string;
-    email: string;
+    email?: string;
     fullName?: {
       givenName?: string | null;
       familyName?: string | null;
@@ -39,12 +39,12 @@ export default function UserRegistrationScreen() {
       saveAppleUser(
         {
           appleUserId: data.appleUserId,
-          email: data.email,
+          email: data.email || "",
           fullName: data.fullName
             ? {
-                givenName: data.fullName.givenName || undefined,
-                familyName: data.fullName.familyName || undefined,
-              }
+              givenName: data.fullName.givenName || undefined,
+              familyName: data.fullName.familyName || undefined,
+            }
             : undefined,
         },
         {
@@ -100,7 +100,7 @@ export default function UserRegistrationScreen() {
       phone: phone.trim(),
     });
 
-    router.replace("/(tabs)");
+
   };
 
   return (

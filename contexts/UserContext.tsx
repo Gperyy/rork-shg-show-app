@@ -46,7 +46,7 @@ export const [UserProvider, useUser] = createContextHook(() => {
 
         // If network error or Supabase unavailable, still save locally
         if (error.message.includes("Supabase is not configured") ||
-            error.message.includes("EXPO_PUBLIC_RORK_API_BASE_URL")) {
+          error.message.includes("EXPO_PUBLIC_RORK_API_BASE_URL")) {
           console.warn("⚠️ [UserContext] Falling back to local storage only");
           const localUser = {
             ...userData,
@@ -71,7 +71,7 @@ export const [UserProvider, useUser] = createContextHook(() => {
   const saveAppleUserMutation = useMutation({
     mutationFn: async (appleData: {
       appleUserId: string;
-      email: string;
+      email?: string;
       fullName?: {
         givenName?: string;
         familyName?: string;
@@ -83,7 +83,7 @@ export const [UserProvider, useUser] = createContextHook(() => {
         console.log("📡 [UserContext] Calling Apple Sign In API...");
         const savedUser = await trpcClient.user.registerOrLoginWithApple.mutate({
           appleUserId: appleData.appleUserId,
-          email: appleData.email,
+          email: appleData.email || "",
           fullName: appleData.fullName,
         });
 
@@ -96,7 +96,27 @@ export const [UserProvider, useUser] = createContextHook(() => {
       } catch (error: any) {
         console.error("❌ [UserContext] Error saving Apple user:", error.message);
         console.error("Full error:", error);
-        throw error;
+
+        // Fallback to local storage if backend fails
+        console.warn("⚠️ [UserContext] Falling back to local storage for Apple User");
+
+        // If email is missing (subsequent login) and we are offline, 
+        // we might not get the real email. Use a placeholder or ID.
+        const effectiveEmail = appleData.email || `apple-${appleData.appleUserId}@placeholder.com`;
+
+        const localUser: User = {
+          id: `apple_${appleData.appleUserId}`,
+          name: [appleData.fullName?.givenName, appleData.fullName?.familyName]
+            .filter(Boolean)
+            .join(" ") || "Apple User",
+          email: effectiveEmail,
+        };
+
+        await AsyncStorage.setItem(
+          USER_STORAGE_KEY,
+          JSON.stringify(localUser),
+        );
+        return localUser;
       }
     },
     onSuccess: (data) => {
