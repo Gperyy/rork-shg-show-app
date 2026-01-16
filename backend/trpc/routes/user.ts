@@ -158,7 +158,7 @@ export const userRouter = createTRPCRouter({
     .input(
       z.object({
         appleUserId: z.string().min(1, "Apple user ID is required"),
-        email: z.string().email("Invalid email address"),
+        email: z.string().optional(),
         fullName: z
           .object({
             givenName: z.string().optional(),
@@ -192,13 +192,20 @@ export const userRouter = createTRPCRouter({
         return existingUser;
       }
 
-      // If no user found by apple_user_id, check by email
-      console.log("🔍 Checking for existing user by email...");
-      const { data: emailUser, error: emailError } = await supabase
-        .from("users")
-        .select("*")
-        .eq("email", input.email)
-        .single();
+      // If no user found by apple_user_id, check by email (only if email is provided)
+      let emailUser = null;
+      if (input.email && input.email.trim() !== "") {
+        console.log("🔍 Checking for existing user by email...");
+        const { data, error } = await supabase
+          .from("users")
+          .select("*")
+          .eq("email", input.email)
+          .single();
+
+        if (!error && data) {
+          emailUser = data;
+        }
+      }
 
       if (emailUser) {
         // User exists with this email but no apple_user_id
@@ -241,7 +248,7 @@ export const userRouter = createTRPCRouter({
         .insert([
           {
             name: name,
-            email: input.email,
+            email: (input.email && input.email.trim() !== "") ? input.email : `apple_${input.appleUserId}@privaterelay.appleid.com`,
             apple_user_id: input.appleUserId,
             phone: null,
           },
