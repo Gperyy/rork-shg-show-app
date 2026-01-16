@@ -3,30 +3,23 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "../create-context";
 
 // Helper to get Supabase client
-const getSupabase = (env: Record<string, string>) => {
-  console.log("🔍 getSupabase called with env:", {
-    envExists: !!env,
-    envKeys: env ? Object.keys(env) : [],
-    envValues: env || {},
-    hasUrl: env && !!env.EXPO_PUBLIC_SUPABASE_URL && env.EXPO_PUBLIC_SUPABASE_URL !== "",
-    hasKey: env && !!env.EXPO_PUBLIC_SUPABASE_ANON_KEY && env.EXPO_PUBLIC_SUPABASE_ANON_KEY !== ""
+// Reads directly from process.env since ctx.env becomes undefined in edge runtime
+const getSupabase = () => {
+  const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
+
+  console.log("🔍 getSupabase called:", {
+    hasUrl: !!supabaseUrl && supabaseUrl !== "",
+    hasKey: !!supabaseAnonKey && supabaseAnonKey !== "",
+    urlValue: supabaseUrl ? `${supabaseUrl.substring(0, 30)}...` : "NOT SET",
+    keyValue: supabaseAnonKey ? `${supabaseAnonKey.substring(0, 20)}...` : "NOT SET",
   });
-
-  if (!env) {
-    console.error("❌ No env object provided to getSupabase");
-    return null;
-  }
-
-  const supabaseUrl = env.EXPO_PUBLIC_SUPABASE_URL;
-  const supabaseAnonKey = env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
 
   // Check for empty strings as well
   if (!supabaseUrl || supabaseUrl === "" || !supabaseAnonKey || supabaseAnonKey === "") {
     console.error("❌ Supabase config missing in getSupabase:", {
       url: supabaseUrl && supabaseUrl !== "" ? "Set" : "Missing/Empty",
       key: supabaseAnonKey && supabaseAnonKey !== "" ? "Set" : "Missing/Empty",
-      urlValue: supabaseUrl || "(empty)",
-      keyValue: supabaseAnonKey ? "[REDACTED]" : "(empty)"
     });
     return null;
   }
@@ -47,14 +40,7 @@ export const userRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      console.log("🔍 DEBUG: Full context object:", {
-        ctxKeys: Object.keys(ctx),
-        hasEnv: 'env' in ctx,
-        envValue: ctx.env,
-        fullCtx: ctx
-      });
-
-      const supabase = getSupabase(ctx.env);
+      const supabase = getSupabase();
       console.log("📝 Register mutation called with:", {
         name: input.name,
         email: input.email,
@@ -97,7 +83,7 @@ export const userRouter = createTRPCRouter({
   getByEmail: publicProcedure
     .input(z.object({ email: z.string().email() }))
     .query(async ({ input, ctx }) => {
-      const supabase = getSupabase(ctx.env);
+      const supabase = getSupabase();
       if (!supabase) {
         throw new Error("Supabase is not configured");
       }
@@ -130,7 +116,7 @@ export const userRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      const supabase = getSupabase(ctx.env);
+      const supabase = getSupabase();
       if (!supabase) {
         throw new Error("Supabase is not configured");
       }
@@ -155,7 +141,7 @@ export const userRouter = createTRPCRouter({
   getById: publicProcedure
     .input(z.object({ id: z.string().uuid() }))
     .query(async ({ input, ctx }) => {
-      const supabase = getSupabase(ctx.env);
+      const supabase = getSupabase();
       if (!supabase) {
         throw new Error("Supabase is not configured");
       }
@@ -191,14 +177,7 @@ export const userRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      console.log("🔍 DEBUG Apple: Full context object:", {
-        ctxKeys: Object.keys(ctx),
-        hasEnv: 'env' in ctx,
-        envValue: ctx.env,
-        fullCtx: ctx
-      });
-
-      const supabase = getSupabase(ctx.env);
+      const supabase = getSupabase();
       console.log("🍎 Apple Sign In mutation called with:", {
         appleUserId: input.appleUserId,
         email: input.email,
