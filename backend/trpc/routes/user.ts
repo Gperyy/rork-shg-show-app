@@ -5,8 +5,7 @@ import { createTRPCRouter, publicProcedure } from "../create-context";
 // Helper to get Supabase client
 // Helper to get Supabase client
 const getSupabase = (env: Record<string, string>) => {
-  // In Edge Runtime, window is not defined, so this check is fine.
-  // But we rely on env vars passed from context.
+  if (!env) return null;
 
   const supabaseUrl = env.EXPO_PUBLIC_SUPABASE_URL;
   const supabaseAnonKey = env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
