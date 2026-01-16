@@ -8,15 +8,19 @@ export const createContext = async (
   c?: HonoContext
 ) => {
   // Vercel edge runtime uses process.env, not c.env (which is for Cloudflare Workers)
-  const env = (process.env || {}) as Record<string, string>;
+  // Extract environment variables explicitly to avoid issues with process.env's special object type
+  const env: Record<string, string> = {
+    EXPO_PUBLIC_SUPABASE_URL: process.env.EXPO_PUBLIC_SUPABASE_URL || "",
+    EXPO_PUBLIC_SUPABASE_ANON_KEY: process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || "",
+  };
 
   console.log("🔧 createContext called:", {
     hasHonoContext: !!c,
     hasProcessEnv: !!process.env,
-    envKeys: Object.keys(env),
+    processEnvKeys: Object.keys(process.env || {}),
+    extractedEnv: env,
     hasSupabaseUrl: !!env.EXPO_PUBLIC_SUPABASE_URL,
     hasSupabaseKey: !!env.EXPO_PUBLIC_SUPABASE_ANON_KEY,
-    supabaseUrlPreview: env.EXPO_PUBLIC_SUPABASE_URL ? env.EXPO_PUBLIC_SUPABASE_URL.substring(0, 30) + "..." : "undefined"
   });
 
   return {
