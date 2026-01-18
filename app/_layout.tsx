@@ -1,7 +1,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stack, useRouter, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import {
   useFonts,
@@ -15,6 +15,7 @@ import {
 import { UserProvider, useUser } from "@/contexts/UserContext";
 import { NotificationProvider } from "@/contexts/NotificationContext";
 import { trpc, trpcClient } from "@/lib/trpc";
+import LoadingScreen from "@/components/LoadingScreen";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -24,10 +25,12 @@ function RootLayoutNav() {
   const { user, isLoading } = useUser();
   const segments = useSegments();
   const router = useRouter();
+  const [showLoadingScreen, setShowLoadingScreen] = useState(true);
 
   useEffect(() => {
     if (isLoading) return;
 
+    // Hide splash screen once user data is loaded
     SplashScreen.hideAsync();
 
     const inTabs = segments[0] === "(tabs)";
@@ -39,18 +42,30 @@ function RootLayoutNav() {
     }
   }, [user, segments, isLoading, router]);
 
+  const handleLoadingComplete = () => {
+    setShowLoadingScreen(false);
+  };
+
   return (
-    <Stack screenOptions={{ headerBackTitle: "Geri" }}>
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen
-        name="user-registration"
-        options={{
-          headerShown: false,
-          gestureEnabled: false,
-        }}
-      />
-      <Stack.Screen name="+not-found" options={{ title: "Sayfa Bulunamadı" }} />
-    </Stack>
+    <>
+      <Stack screenOptions={{ headerBackTitle: "Geri" }}>
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen
+          name="user-registration"
+          options={{
+            headerShown: false,
+            gestureEnabled: false,
+          }}
+        />
+        <Stack.Screen name="+not-found" options={{ title: "Sayfa Bulunamadı" }} />
+      </Stack>
+      {showLoadingScreen && (
+        <LoadingScreen
+          onComplete={handleLoadingComplete}
+          targetDate="2026-05-30"
+        />
+      )}
+    </>
   );
 }
 
