@@ -11,6 +11,7 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 
 import Colors from "@/constants/colors";
+import { InstagramIcon, FacebookIcon, YoutubeIcon, XIcon } from "@/components/CustomIcons";
 
 interface FAQItem {
   q: string;
@@ -208,32 +209,32 @@ export default function InfoScreen() {
                 <Text style={styles.socialTitle}>Sosyal Medya</Text>
                 <View style={styles.socialButtons}>
                   <TouchableOpacity
-                    style={styles.socialButton}
-                    onPress={() => handleSocialMedia("https://instagram.com/shgairshow")}
+                    style={styles.socialIconButton}
+                    onPress={() => handleSocialMedia("https://www.instagram.com/sivrihisarhavagosterileri/")}
                     activeOpacity={0.7}
                   >
-                    <Text style={styles.socialButtonText}>Instagram</Text>
+                    <InstagramIcon color={Colors.white} size={24} />
                   </TouchableOpacity>
                   <TouchableOpacity
-                    style={styles.socialButton}
-                    onPress={() => handleSocialMedia("https://twitter.com/shgairshow")}
+                    style={styles.socialIconButton}
+                    onPress={() => handleSocialMedia("https://www.facebook.com/sivrihisarhavagosterileri?locale=tr_TR")}
                     activeOpacity={0.7}
                   >
-                    <Text style={styles.socialButtonText}>X (Twitter)</Text>
+                    <FacebookIcon color={Colors.white} size={24} />
                   </TouchableOpacity>
                   <TouchableOpacity
-                    style={styles.socialButton}
-                    onPress={() => handleSocialMedia("https://facebook.com/shgairshow")}
+                    style={styles.socialIconButton}
+                    onPress={() => handleSocialMedia("https://www.youtube.com/@SHGAIRSHOWS")}
                     activeOpacity={0.7}
                   >
-                    <Text style={styles.socialButtonText}>Facebook</Text>
+                    <YoutubeIcon color={Colors.white} size={24} />
                   </TouchableOpacity>
                   <TouchableOpacity
-                    style={styles.socialButton}
-                    onPress={() => handleSocialMedia("https://youtube.com/@shgairshow")}
+                    style={styles.socialIconButton}
+                    onPress={() => handleSocialMedia("https://x.com/SHG_Airshow?lang=tr")}
                     activeOpacity={0.7}
                   >
-                    <Text style={styles.socialButtonText}>YouTube</Text>
+                    <XIcon color={Colors.white} size={24} />
                   </TouchableOpacity>
                 </View>
               </View>
@@ -400,21 +401,18 @@ const styles = StyleSheet.create({
   },
   socialButtons: {
     flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 10,
+    justifyContent: "space-between",
+    gap: 12,
   },
-  socialButton: {
-    backgroundColor: "rgba(239, 68, 68, 0.15)",
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 20,
+  socialIconButton: {
+    flex: 1,
+    backgroundColor: "rgba(239, 68, 68, 0.2)",
+    paddingVertical: 14,
+    borderRadius: 14,
     borderWidth: 1,
-    borderColor: "rgba(239, 68, 68, 0.3)",
-  },
-  socialButtonText: {
-    fontSize: 13,
-    fontWeight: "600",
-    color: Colors.live,
+    borderColor: "rgba(239, 68, 68, 0.4)",
+    alignItems: "center",
+    justifyContent: "center",
   },
   faqContainer: {
     backgroundColor: "rgba(30, 58, 95, 0.5)",

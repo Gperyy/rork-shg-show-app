@@ -26,7 +26,7 @@ interface LoadingScreenProps {
 
 const LoadingScreen: React.FC<LoadingScreenProps> = ({
   onComplete,
-  targetDate = '2026-05-30'
+  targetDate = '2026-09-19'
 }) => {
   const [progress, setProgress] = useState(0);
   const [daysRemaining, setDaysRemaining] = useState(0);

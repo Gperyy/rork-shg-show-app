@@ -62,7 +62,7 @@ function RootLayoutNav() {
       {showLoadingScreen && (
         <LoadingScreen
           onComplete={handleLoadingComplete}
-          targetDate="2026-05-30"
+          targetDate="2026-09-19"
         />
       )}
     </>

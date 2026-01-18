@@ -1,4 +1,4 @@
-import { Search, Users } from "lucide-react-native";
+import { Search, Users, ExternalLink, ChevronDown, ChevronUp } from "lucide-react-native";
 import React, { useState } from "react";
 import {
   StyleSheet,
@@ -8,6 +8,7 @@ import {
   TextInput,
   Image,
   TouchableOpacity,
+  Linking,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 
@@ -16,10 +17,15 @@ import { PARTICIPANTS_DATA, ParticipantData } from "@/mocks/participants";
 
 export default function ParticipantsScreen() {
   const [search, setSearch] = useState<string>("");
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   const filteredParticipants = PARTICIPANTS_DATA.filter((participant) =>
     participant.name.toLowerCase().includes(search.toLowerCase())
   );
+
+  const handleToggleExpand = (id: string) => {
+    setExpandedId(expandedId === id ? null : id);
+  };
 
   return (
     <View style={styles.container}>
@@ -60,7 +66,12 @@ export default function ParticipantsScreen() {
             </View>
           ) : (
             filteredParticipants.map((participant) => (
-              <ParticipantCard key={participant.id} participant={participant} />
+              <ParticipantCard
+                key={participant.id}
+                participant={participant}
+                isExpanded={expandedId === participant.id}
+                onToggle={() => handleToggleExpand(participant.id)}
+              />
             ))
           )}
         </ScrollView>
@@ -69,17 +80,46 @@ export default function ParticipantsScreen() {
   );
 }
 
-function ParticipantCard({ participant }: { participant: ParticipantData }) {
+interface ParticipantCardProps {
+  participant: ParticipantData;
+  isExpanded: boolean;
+  onToggle: () => void;
+}
+
+function ParticipantCard({ participant, isExpanded, onToggle }: ParticipantCardProps) {
+  const handleOpenUrl = () => {
+    if (participant.url) {
+      Linking.openURL(participant.url);
+    }
+  };
+
   return (
-    <TouchableOpacity style={styles.card} activeOpacity={0.9}>
+    <TouchableOpacity style={styles.card} activeOpacity={0.9} onPress={onToggle}>
       <View style={styles.cardImageContainer}>
         <Image source={participant.image} style={styles.cardImage} />
       </View>
       <View style={styles.cardContent}>
-        <Text style={styles.cardTitle}>{participant.name}</Text>
-        <Text style={styles.cardBio} numberOfLines={3}>
+        <View style={styles.cardHeader}>
+          <Text style={styles.cardTitle}>{participant.name}</Text>
+          {isExpanded ? (
+            <ChevronUp color={Colors.live} size={20} />
+          ) : (
+            <ChevronDown color={Colors.textSecondary} size={20} />
+          )}
+        </View>
+        <Text style={[styles.cardBio, isExpanded && styles.cardBioExpanded]} numberOfLines={isExpanded ? undefined : 3}>
           {participant.bio}
         </Text>
+        {isExpanded && participant.url && (
+          <TouchableOpacity
+            style={styles.detailButton}
+            onPress={handleOpenUrl}
+            activeOpacity={0.7}
+          >
+            <ExternalLink color={Colors.white} size={16} />
+            <Text style={styles.detailButtonText}>Detaylı Bilgi</Text>
+          </TouchableOpacity>
+        )}
       </View>
     </TouchableOpacity>
   );
@@ -181,16 +221,40 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingTop: 16,
   },
+  cardHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 8,
+  },
   cardTitle: {
     fontSize: 20,
     fontWeight: "800",
     color: Colors.white,
-    marginBottom: 8,
     letterSpacing: 0.3,
+    flex: 1,
   },
   cardBio: {
     fontSize: 14,
     color: Colors.textSecondary,
     lineHeight: 21,
+  },
+  cardBioExpanded: {
+    marginBottom: 16,
+  },
+  detailButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: Colors.live,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 12,
+    gap: 8,
+  },
+  detailButtonText: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: Colors.white,
   },
 });
