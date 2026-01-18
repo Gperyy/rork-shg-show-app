@@ -1,8 +1,6 @@
 import { Tabs, usePathname, router } from "expo-router";
-import React, { useCallback } from "react";
-import { Platform, View, Dimensions } from "react-native";
-import { Gesture, GestureDetector } from "react-native-gesture-handler";
-import Animated, { runOnJS } from "react-native-reanimated";
+import React, { useCallback, useRef } from "react";
+import { Platform, View, PanResponder } from "react-native";
 
 import Colors from "@/constants/colors";
 import {
@@ -14,8 +12,7 @@ import {
 } from "@/components/CustomIcons";
 
 const TAB_ROUTES = ["/", "/schedule", "/participants", "/tickets", "/info"] as const;
-const SWIPE_THRESHOLD = 50;
-const { width: SCREEN_WIDTH } = Dimensions.get("window");
+const SWIPE_THRESHOLD = 80;
 
 function SwipeNavigator({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -35,24 +32,28 @@ function SwipeNavigator({ children }: { children: React.ReactNode }) {
     }
   }, [getCurrentTabIndex]);
 
-  const panGesture = Gesture.Pan()
-    .activeOffsetX([-20, 20])
-    .onEnd((event) => {
-      if (Math.abs(event.translationX) > SWIPE_THRESHOLD) {
-        if (event.translationX > 0) {
-          runOnJS(navigateToTab)("right");
-        } else {
-          runOnJS(navigateToTab)("left");
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => false,
+      onMoveShouldSetPanResponder: (_, gestureState) => {
+        return Math.abs(gestureState.dx) > 20 && Math.abs(gestureState.dy) < 50;
+      },
+      onPanResponderRelease: (_, gestureState) => {
+        if (Math.abs(gestureState.dx) > SWIPE_THRESHOLD) {
+          if (gestureState.dx > 0) {
+            navigateToTab("right");
+          } else {
+            navigateToTab("left");
+          }
         }
-      }
-    });
+      },
+    })
+  ).current;
 
   return (
-    <GestureDetector gesture={panGesture}>
-      <Animated.View style={{ flex: 1 }}>
-        {children}
-      </Animated.View>
-    </GestureDetector>
+    <View style={{ flex: 1 }} {...panResponder.panHandlers}>
+      {children}
+    </View>
   );
 }
 
