@@ -273,10 +273,12 @@ const styles = StyleSheet.create({
     fontSize: SCREEN_WIDTH < 380 ? 100 : 140,
     fontFamily: Fonts.extraBold,
     color: Colors.white,
-    lineHeight: SCREEN_WIDTH < 380 ? 110 : 150,
+    lineHeight: SCREEN_WIDTH < 380 ? 100 : 140,
     textShadowColor: 'rgba(220, 38, 38, 0.3)',
     textShadowOffset: { width: 0, height: 10 },
     textShadowRadius: 30,
+    includeFontPadding: false,
+    textAlignVertical: 'center',
   },
   daysLabel: {
     color: '#dc2626',
