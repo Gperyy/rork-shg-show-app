@@ -7,7 +7,8 @@ import {
   HomeIcon,
   CalendarBoldIcon,
   PlaneAltIcon,
-  TicketFillIcon
+  TicketFillIcon,
+  InfoIcon
 } from "@/components/CustomIcons";
 
 export default function TabLayout() {
@@ -62,6 +63,13 @@ export default function TabLayout() {
         options={{
           title: "Biletler",
           tabBarIcon: ({ color, size }) => <TicketFillIcon color={color} size={size} />,
+        }}
+      />
+      <Tabs.Screen
+        name="info"
+        options={{
+          title: "Bilgi",
+          tabBarIcon: ({ color, size }) => <InfoIcon color={color} size={size} />,
         }}
       />
     </Tabs>
