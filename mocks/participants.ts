@@ -1,4 +1,6 @@
 import { ImageSourcePropType } from "react-native";
+import { url } from "zod";
+import { da } from "zod/v4/locales";
 
 export interface ParticipantData {
   id: string;
@@ -40,7 +42,7 @@ export const PARTICIPANTS_DATA: ParticipantData[] = [
     id: "5",
     name: "BELL UH-1H (HUEY)",
     image: require("@/assets/images/uh1h.png"),
-    bio: "Vietnam Gazisi UH-1H ön kısmında, hizmet verdiği vurucu tim ile özleşen sarı renkli büyük bir "ARI" figürü taşımaktadır. Dünyanın en ünlü helikopterlerinden biri olan Huey SHG Airshow'da!",
+    bio: "Vietnam Gazisi UH-1H ön kısmında, hizmet verdiği vurucu tim ile özleşen sarı renkli büyük bir \"ARI\" figürü taşımaktadır. Dünyanın en ünlü helikopterlerinden biri olan Huey SHG Airshow'da!",
     url: "https://msomuseum.com/bell-uh-1h-huey/",
   },
   {
@@ -68,7 +70,7 @@ export const PARTICIPANTS_DATA: ParticipantData[] = [
     id: "9",
     name: "DE HAVILLAND DH.82 TIGER MOTH",
     image: require("@/assets/images/tigermoth.png"),
-    bio: "9 dalda Oscar ödülü alan "The English Patient" (İngiliz Hasta) filminde yer alan T7471 seri no'lu Tiger Moth SHG Airshow'da sizlerle!",
+    bio: "9 dalda Oscar ödülü alan \"The English Patient\" (İngiliz Hasta) filminde yer alan T7471 seri no'lu Tiger Moth SHG Airshow'da sizlerle!",
     url: "https://msomuseum.com/de-havilland-dh.82-tiger-moth/",
   },
   {
@@ -89,7 +91,7 @@ export const PARTICIPANTS_DATA: ParticipantData[] = [
     id: "12",
     name: "HAVACI KADINLAR DERNEĞİ",
     image: require("@/assets/images/havacikadinlar.png"),
-    bio: "Asil vazifesi, "Türk Kadını'nın" havacılık kültürünü artırmak olan, havacılığa merak duyan bütün kadınlara yardımcı olmayı ve kadın uçucu sayısını mümkün olduğu kadar artırmayı hedefleyen Havacı Kadınlar Derneği, SHG Airshow'da!",
+    bio: "Asil vazifesi, \"Türk Kadını'nın\" havacılık kültürünü artırmak olan, havacılığa merak duyan bütün kadınlara yardımcı olmayı ve kadın uçucu sayısını mümkün olduğu kadar artırmayı hedefleyen Havacı Kadınlar Derneği, SHG Airshow'da!",
     url: "https://www.havacikadinlar.org/",
   },
   {

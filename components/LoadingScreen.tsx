@@ -45,13 +45,13 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
   ).current;
 
   const sponsors: Sponsor[] = [
-    { name: "Acromach", logo: require('@/assets/images/acromach.png') },
-    { name: "Havacikadinlar", logo: require('@/assets/images/havacikadinlar.png') },
-    { name: "Mach Air", logo: require('@/assets/images/mach.png') },
-    { name: "M.S.Ö. Hava ve Uzay Müzesi", logo: require('@/assets/images/mso.png') },
-    { name: "Sivhavder", logo: require('@/assets/images/sivhavder.png') },
-    { name: "Vecihi", logo: require('@/assets/images/vecihi.png') },
-    { name: "Yeni Menekşe", logo: require('@/assets/images/yenimenekse.png') },
+    { name: "Acromach", logo: require('@/assets/images/acromach-logo.png') },
+    { name: "Agense 190", logo: require('@/assets/images/agense190-logo.png') },
+    { name: "CinemaPink", logo: require('@/assets/images/cinemapink-logo.png') },
+    { name: "Keskinler", logo: require('@/assets/images/keskinler-logo.png') },
+    { name: "Mach Air", logo: require('@/assets/images/mach-logo.png') },
+    { name: "M.S.Ö. Hava ve Uzay Müzesi", logo: require('@/assets/images/mso-logo.png') },
+    { name: "Ofis Tekin", logo: require('@/assets/images/ofistekin-logo.png') },
   ];
 
   useEffect(() => {
@@ -149,7 +149,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
               }
             ]}
           >
-            <Text style={styles.daysNumber}>{daysRemaining}</Text>
+            <Text style={styles.daysNumber} adjustsFontSizeToFit numberOfLines={1}>{daysRemaining}</Text>
             <Text style={styles.daysLabel}>GÜN KALDI</Text>
           </Animated.View>
 

@@ -12,10 +12,11 @@ import {
 } from "@/components/CustomIcons";
 
 const TAB_ROUTES = ["/", "/schedule", "/participants", "/tickets", "/info"] as const;
-const SWIPE_THRESHOLD = 80;
+const SWIPE_THRESHOLD = 50;
 
 function SwipeNavigator({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const swipeHandled = useRef(false);
 
   const getCurrentTabIndex = useCallback(() => {
     const normalizedPath = pathname === "" ? "/" : pathname;
@@ -36,16 +37,26 @@ function SwipeNavigator({ children }: { children: React.ReactNode }) {
     PanResponder.create({
       onStartShouldSetPanResponder: () => false,
       onMoveShouldSetPanResponder: (_, gestureState) => {
-        return Math.abs(gestureState.dx) > 20 && Math.abs(gestureState.dy) < 50;
+        // Only handle horizontal swipes that are more horizontal than vertical
+        const isHorizontalSwipe = Math.abs(gestureState.dx) > Math.abs(gestureState.dy) * 1.5;
+        return isHorizontalSwipe && Math.abs(gestureState.dx) > 10;
       },
-      onPanResponderRelease: (_, gestureState) => {
-        if (Math.abs(gestureState.dx) > SWIPE_THRESHOLD) {
+      onPanResponderGrant: () => {
+        swipeHandled.current = false;
+      },
+      onPanResponderMove: (_, gestureState) => {
+        // Handle swipe during movement for more responsive feel
+        if (!swipeHandled.current && Math.abs(gestureState.dx) > SWIPE_THRESHOLD) {
+          swipeHandled.current = true;
           if (gestureState.dx > 0) {
             navigateToTab("right");
           } else {
             navigateToTab("left");
           }
         }
+      },
+      onPanResponderRelease: () => {
+        swipeHandled.current = false;
       },
     })
   ).current;
