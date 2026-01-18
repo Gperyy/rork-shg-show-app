@@ -57,3 +57,12 @@ export const LocationIcon = ({ color = "#000", size = 24 }: IconProps) => (
         />
     </Svg>
 );
+
+export const InfoIcon = ({ color = "#000", size = 24 }: IconProps) => (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+        <Path
+            fill={color}
+            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"
+        />
+    </Svg>
+);
