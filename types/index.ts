@@ -18,8 +18,6 @@ export interface User {
 export interface Participant {
   id: string;
   name: string;
-  country: string;
-  aircraft: string;
   image: string;
   bio: string;
 }

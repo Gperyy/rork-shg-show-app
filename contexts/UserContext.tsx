@@ -44,9 +44,13 @@ export const [UserProvider, useUser] = createContextHook(() => {
         console.error("❌ [UserContext] Error saving user:", error.message);
         console.error("Full error:", error);
 
-        // If network error or Supabase unavailable, still save locally
+        // If network error, JSON parse error, or Supabase unavailable, still save locally
         if (error.message.includes("Supabase is not configured") ||
-          error.message.includes("EXPO_PUBLIC_RORK_API_BASE_URL")) {
+          error.message.includes("EXPO_PUBLIC_RORK_API_BASE_URL") ||
+          error.message.includes("JSON Parse error") ||
+          error.message.includes("Unexpected end of input") ||
+          error.message.includes("Network request failed") ||
+          error.name === "TRPCClientError") {
           console.warn("⚠️ [UserContext] Falling back to local storage only");
           const localUser = {
             ...userData,

@@ -3,6 +3,14 @@ import { Stack, useRouter, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import {
+  useFonts,
+  Inter_400Regular,
+  Inter_500Medium,
+  Inter_600SemiBold,
+  Inter_700Bold,
+  Inter_800ExtraBold,
+} from "@expo-google-fonts/inter";
 
 import { UserProvider, useUser } from "@/contexts/UserContext";
 import { NotificationProvider } from "@/contexts/NotificationContext";
@@ -34,12 +42,12 @@ function RootLayoutNav() {
   return (
     <Stack screenOptions={{ headerBackTitle: "Geri" }}>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen 
-        name="user-registration" 
-        options={{ 
+      <Stack.Screen
+        name="user-registration"
+        options={{
           headerShown: false,
           gestureEnabled: false,
-        }} 
+        }}
       />
       <Stack.Screen name="+not-found" options={{ title: "Sayfa Bulunamadı" }} />
     </Stack>
@@ -47,6 +55,24 @@ function RootLayoutNav() {
 }
 
 export default function RootLayout() {
+  const [fontsLoaded] = useFonts({
+    Inter_400Regular,
+    Inter_500Medium,
+    Inter_600SemiBold,
+    Inter_700Bold,
+    Inter_800ExtraBold,
+  });
+
+  useEffect(() => {
+    if (fontsLoaded) {
+      // Fonts loaded, splash screen will be hidden when user is ready
+    }
+  }, [fontsLoaded]);
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
   return (
     <QueryClientProvider client={queryClient}>
       <trpc.Provider client={trpcClient} queryClient={queryClient}>

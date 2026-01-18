@@ -94,6 +94,7 @@ export default function ScheduleScreen() {
       >
         <View style={styles.header}>
           <Text style={styles.headerTitle}>Gösteri Programı</Text>
+          <Text style={styles.headerSubtitle}>SHG Airshow 2026</Text>
         </View>
 
         {currentShow && (
@@ -134,11 +135,13 @@ export default function ScheduleScreen() {
         )}
 
         <View style={styles.searchContainer}>
-          <Search color={Colors.gray} size={20} />
+          <View style={styles.searchIconContainer}>
+            <Search color={Colors.textSecondary} size={18} />
+          </View>
           <TextInput
             style={styles.searchInput}
-            placeholder="Katılımcı ara..."
-            placeholderTextColor={Colors.gray}
+            placeholder="Program ara..."
+            placeholderTextColor={Colors.textSecondary}
             value={search}
             onChangeText={setSearch}
           />
@@ -157,7 +160,7 @@ export default function ScheduleScreen() {
               <View key={date}>
                 <View style={styles.dateSection}>
                   <View style={styles.dateIcon}>
-                    <Text style={styles.dateIconText}>📅</Text>
+                    <Text style={styles.dateIconText}>🗓️</Text>
                   </View>
                   <Text style={styles.dateText}>{dateLabel}</Text>
                 </View>
@@ -226,17 +229,20 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
     paddingHorizontal: 24,
     paddingTop: 60,
-    paddingBottom: 20,
+    paddingBottom: 16,
   },
   headerTitle: {
-    fontSize: 28,
-    fontWeight: "700",
+    fontSize: 32,
+    fontWeight: "800",
     color: Colors.white,
+    marginBottom: 4,
+  },
+  headerSubtitle: {
+    fontSize: 14,
+    fontWeight: "500",
+    color: Colors.textSecondary,
   },
   liveShowCard: {
     marginHorizontal: 24,
@@ -314,18 +320,29 @@ const styles = StyleSheet.create({
   searchContainer: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(255, 255, 255, 0.1)",
-    borderRadius: 16,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    backgroundColor: "rgba(30, 58, 95, 0.6)",
+    borderRadius: 14,
+    paddingHorizontal: 4,
+    paddingVertical: 4,
     marginHorizontal: 24,
-    marginBottom: 24,
-    gap: 12,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.08)",
+  },
+  searchIconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 10,
+    backgroundColor: "rgba(59, 130, 246, 0.15)",
+    justifyContent: "center",
+    alignItems: "center",
   },
   searchInput: {
     flex: 1,
-    fontSize: 16,
+    fontSize: 15,
     color: Colors.white,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
   },
   scrollView: {
     flex: 1,
@@ -391,18 +408,18 @@ const styles = StyleSheet.create({
   showTime: {
     fontSize: 14,
     fontWeight: "700",
-    color: Colors.accentLight,
+    color: Colors.live,
     marginBottom: 8,
   },
   showTimePast: {
     color: Colors.gray,
   },
   showCard: {
-    backgroundColor: "rgba(30, 58, 95, 0.4)",
+    backgroundColor: "rgba(30, 58, 95, 0.6)",
     borderRadius: 16,
     padding: 16,
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.1)",
+    borderColor: "rgba(255, 255, 255, 0.08)",
   },
   showCardActive: {
     backgroundColor: Colors.cardBg,

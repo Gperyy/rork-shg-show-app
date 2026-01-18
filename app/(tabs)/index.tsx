@@ -1,4 +1,4 @@
-import { Calendar as CalendarIcon, MapPin } from "lucide-react-native";
+import { Calendar as CalendarIcon, MapPin, Ticket } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
 import { router } from "expo-router";
 import {
@@ -10,7 +10,9 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 
 import Colors from "@/constants/colors";
+import Fonts from "@/constants/fonts";
 import { EVENT_DATE } from "@/mocks/schedule";
+import { LocationIcon, CalendarBoldIcon } from "@/components/CustomIcons";
 
 interface TimeLeft {
   days: number;
@@ -52,40 +54,69 @@ export default function HomeScreen() {
         style={styles.gradient}
       >
         <View style={styles.content}>
-          <Text style={styles.title}>
-            SHG{"\n"}
-            <Text style={styles.titleBold}>Airshow</Text>
-          </Text>
-          <Text style={styles.year}>2026</Text>
+          {/* Hero Section */}
+          <View style={styles.heroSection}>
+            <Text style={styles.title}>
+              SHG{"\n"}
+              <Text style={styles.titleBold}>Airshow</Text>
+            </Text>
+            <Text style={styles.year}>2026</Text>
+            <Text style={styles.subtitle}>Dünya Havacılığının Buluşma Noktası</Text>
+          </View>
 
-          <Text style={styles.subtitle}>Dünya Havacılığının Buluşma Noktası</Text>
-
-          <View style={styles.eventInfoContainer}>
+          {/* Event Info Card */}
+          <View style={styles.infoCard}>
             <View style={styles.eventInfoItem}>
-              <CalendarIcon color={Colors.accentLight} size={18} />
+              <View style={styles.iconContainer}>
+                <CalendarBoldIcon color={Colors.live} size={20} />
+              </View>
               <Text style={styles.eventInfoText}>19-20 Eylül 2026</Text>
             </View>
             <View style={styles.eventInfoItem}>
-              <MapPin color={Colors.accentLight} size={18} />
-              <Text style={styles.eventInfoText}>Sivrihisar/Eskişehir</Text>
+              <View style={styles.iconContainer}>
+                <LocationIcon color={Colors.live} size={20} />
+              </View>
+              <Text style={styles.eventInfoText}>Sivrihisar, Eskişehir</Text>
             </View>
           </View>
 
-          <View style={styles.countdownContainer}>
-            <CountdownBox value={timeLeft.days} label="GÜN" />
-            <CountdownBox value={timeLeft.hours} label="SAAT" />
-            <CountdownBox value={timeLeft.minutes} label="DAK" />
-            <CountdownBox value={timeLeft.seconds} label="SAN" />
+          {/* Countdown Section - All Red */}
+          <View style={styles.countdownWrapper}>
+            <Text style={styles.countdownTitle}>Geri Sayım</Text>
+            <View style={styles.countdownContainer}>
+              <CountdownBox value={timeLeft.days} label="GÜN" />
+              <CountdownBox value={timeLeft.hours} label="SAAT" />
+              <CountdownBox value={timeLeft.minutes} label="DAK" />
+              <CountdownBox value={timeLeft.seconds} label="SAN" />
+            </View>
           </View>
 
-          <TouchableOpacity style={styles.ticketButton} onPress={() => router.push("/tickets")}>
-            <Text style={styles.ticketButtonText}>Hemen Bilet Al</Text>
-            <Text style={styles.ticketButtonArrow}>→</Text>
-          </TouchableOpacity>
+          {/* Action Buttons */}
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity
+              style={styles.primaryButton}
+              onPress={() => router.push("/tickets")}
+              activeOpacity={0.9}
+            >
+              <LinearGradient
+                colors={[Colors.live, '#DC2626']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.primaryButtonGradient}
+              >
+                <Ticket color={Colors.white} size={20} />
+                <Text style={styles.primaryButtonText}>Hemen Biletini Al</Text>
+              </LinearGradient>
+            </TouchableOpacity>
 
-          <TouchableOpacity style={styles.participantsButton} onPress={() => router.push("/participants")}>
-            <Text style={styles.participantsButtonText}>Katılımcılar</Text>
-          </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.secondaryButton}
+              onPress={() => router.push("/participants")}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.secondaryButtonText}>Katılımcıları Keşfet</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </LinearGradient>
     </View>
@@ -111,107 +142,137 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    paddingHorizontal: 20,
-    paddingTop: 20,
+    paddingHorizontal: 24,
+    paddingTop: 60,
     paddingBottom: 40,
     justifyContent: "center",
   },
+  heroSection: {
+    marginBottom: 24,
+  },
   title: {
-    fontSize: 42,
-    fontWeight: "300",
+    fontSize: 48,
+    fontFamily: Fonts.regular,
     color: Colors.white,
-    lineHeight: 48,
+    lineHeight: 52,
   },
   titleBold: {
-    fontWeight: "800",
+    fontFamily: Fonts.extraBold,
   },
   year: {
-    fontSize: 52,
-    fontWeight: "800",
-    color: Colors.accentLight,
-    marginTop: -4,
+    fontSize: 56,
+    fontFamily: Fonts.extraBold,
+    color: Colors.live,
+    marginTop: -8,
     marginBottom: 8,
   },
   subtitle: {
-    fontSize: 14,
+    fontSize: 15,
     color: Colors.textSecondary,
-    marginBottom: 16,
+    fontFamily: Fonts.medium,
   },
-  eventInfoContainer: {
-    flexDirection: "row",
-    gap: 20,
-    marginBottom: 20,
+  infoCard: {
+    flexDirection: "column",
+    backgroundColor: "rgba(30, 58, 95, 0.6)",
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 24,
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.08)",
+    gap: 12,
   },
   eventInfoItem: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 8,
+    gap: 12,
+  },
+  iconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    backgroundColor: "rgba(59, 130, 246, 0.15)",
+    justifyContent: "center",
+    alignItems: "center",
   },
   eventInfoText: {
+    fontSize: 15,
+    fontFamily: Fonts.semiBold,
+    color: Colors.text,
+  },
+  countdownWrapper: {
+    marginBottom: 32,
+  },
+  countdownTitle: {
     fontSize: 13,
-    fontWeight: "600",
-    color: Colors.white,
+    fontFamily: Fonts.semiBold,
+    color: Colors.textSecondary,
+    marginBottom: 12,
+    textTransform: "uppercase",
+    letterSpacing: 1,
   },
   countdownContainer: {
     flexDirection: "row",
     gap: 10,
-    marginBottom: 24,
   },
   countdownBox: {
     flex: 1,
-    backgroundColor: "rgba(30, 58, 95, 0.6)",
-    borderRadius: 12,
-    paddingVertical: 14,
+    backgroundColor: "rgba(239, 68, 68, 0.12)",
+    borderRadius: 14,
+    paddingVertical: 16,
     paddingHorizontal: 8,
     alignItems: "center",
     borderWidth: 1,
-    borderColor: "rgba(59, 130, 246, 0.2)",
+    borderColor: "rgba(239, 68, 68, 0.3)",
   },
   countdownValue: {
-    fontSize: 26,
-    fontWeight: "800",
-    color: Colors.white,
-    marginBottom: 2,
+    fontSize: 28,
+    fontFamily: Fonts.extraBold,
+    color: Colors.live,
+    marginBottom: 4,
   },
   countdownLabel: {
-    fontSize: 10,
-    fontWeight: "600",
+    fontSize: 11,
+    fontFamily: Fonts.bold,
     color: Colors.textSecondary,
     letterSpacing: 0.5,
   },
-  ticketButton: {
-    backgroundColor: Colors.accentLight,
-    borderRadius: 14,
-    paddingVertical: 16,
-    paddingHorizontal: 20,
+  buttonContainer: {
+    gap: 12,
+  },
+  primaryButton: {
+    borderRadius: 16,
+    overflow: "hidden",
+    shadowColor: Colors.live,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.4,
+    shadowRadius: 16,
+    elevation: 8,
+  },
+  primaryButtonGradient: {
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
+    paddingVertical: 18,
+    paddingHorizontal: 24,
     gap: 10,
-    marginBottom: 12,
   },
-  ticketButtonText: {
-    fontSize: 16,
-    fontWeight: "700",
+  primaryButtonText: {
+    fontSize: 17,
+    fontFamily: Fonts.bold,
     color: Colors.white,
   },
-  ticketButtonArrow: {
-    fontSize: 18,
-    fontWeight: "700",
-    color: Colors.white,
-  },
-  participantsButton: {
-    backgroundColor: "rgba(255, 255, 255, 0.1)",
-    borderRadius: 14,
+  secondaryButton: {
+    backgroundColor: "rgba(255, 255, 255, 0.08)",
+    borderRadius: 16,
     paddingVertical: 16,
-    paddingHorizontal: 20,
+    paddingHorizontal: 24,
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.2)",
+    borderColor: "rgba(255, 255, 255, 0.15)",
   },
-  participantsButtonText: {
+  secondaryButtonText: {
     fontSize: 16,
-    fontWeight: "600",
-    color: Colors.white,
+    fontFamily: Fonts.semiBold,
+    color: Colors.text,
     textAlign: "center",
   },
 });

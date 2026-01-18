@@ -1,31 +1,38 @@
 import { Tabs } from "expo-router";
-import { Home, Calendar, Users, Ticket } from "lucide-react-native";
 import React from "react";
 import { Platform } from "react-native";
 
 import Colors from "@/constants/colors";
+import {
+  HomeIcon,
+  CalendarBoldIcon,
+  PlaneAltIcon,
+  TicketFillIcon
+} from "@/components/CustomIcons";
 
 export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors.accentLight,
+        tabBarActiveTintColor: Colors.live,
         tabBarInactiveTintColor: Colors.gray,
         headerShown: false,
         tabBarStyle: {
           backgroundColor: Colors.primaryDark,
           borderTopWidth: 1,
-          borderTopColor: "rgba(59, 130, 246, 0.2)",
+          borderTopColor: "rgba(239, 68, 68, 0.2)",
           paddingTop: 8,
           height: Platform.OS === "ios" ? 88 : 64,
         },
         tabBarLabelStyle: {
-          fontSize: 11,
+          fontSize: 10,
           fontWeight: "600" as const,
-          marginBottom: Platform.OS === "ios" ? 0 : 8,
+          marginTop: 2,
         },
         tabBarItemStyle: {
-          paddingVertical: 4,
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
         },
       }}
     >
@@ -33,28 +40,28 @@ export default function TabLayout() {
         name="index"
         options={{
           title: "Ana Sayfa",
-          tabBarIcon: ({ color, size }) => <Home color={color} size={size} />,
+          tabBarIcon: ({ color, size }) => <HomeIcon color={color} size={size} />,
         }}
       />
       <Tabs.Screen
         name="schedule"
         options={{
-          title: "Gösteri Programı",
-          tabBarIcon: ({ color, size }) => <Calendar color={color} size={size} />,
+          title: "Program",
+          tabBarIcon: ({ color, size }) => <CalendarBoldIcon color={color} size={size} />,
         }}
       />
       <Tabs.Screen
         name="participants"
         options={{
           title: "Katılımcılar",
-          tabBarIcon: ({ color, size }) => <Users color={color} size={size} />,
+          tabBarIcon: ({ color, size }) => <PlaneAltIcon color={color} size={size} />,
         }}
       />
       <Tabs.Screen
         name="tickets"
         options={{
           title: "Biletler",
-          tabBarIcon: ({ color, size }) => <Ticket color={color} size={size} />,
+          tabBarIcon: ({ color, size }) => <TicketFillIcon color={color} size={size} />,
         }}
       />
     </Tabs>
