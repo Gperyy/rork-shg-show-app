@@ -7,7 +7,7 @@ import { Platform, Alert } from "react-native";
 import { SCHEDULE_DATA } from "@/mocks/schedule";
 
 // Notification sound
-const notificationSound = require("@/assets/sounds/yeni-menekse.wav");
+const notificationSound = require("../assets/sounds/yeni-menekse.wav");
 
 if (Platform.OS !== "web") {
   Notifications.setNotificationHandler({
