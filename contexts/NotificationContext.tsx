@@ -1,9 +1,13 @@
 import createContextHook from "@nkzw/create-context-hook";
 import * as Notifications from "expo-notifications";
-import { useEffect, useState, useCallback } from "react";
+import { Audio } from "expo-av";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { Platform, Alert } from "react-native";
 
 import { SCHEDULE_DATA } from "@/mocks/schedule";
+
+// Notification sound
+const notificationSound = require("@/assets/sounds/notification.wav");
 
 if (Platform.OS !== "web") {
   Notifications.setNotificationHandler({
@@ -19,16 +23,61 @@ if (Platform.OS !== "web") {
 
 export const [NotificationProvider, useNotifications] = createContextHook(() => {
   const [permissionGranted, setPermissionGranted] = useState<boolean>(false);
+  const soundRef = useRef<Audio.Sound | null>(null);
+
+  // Play notification sound
+  const playNotificationSound = useCallback(async () => {
+    try {
+      // Unload previous sound if exists
+      if (soundRef.current) {
+        await soundRef.current.unloadAsync();
+      }
+
+      const { sound } = await Audio.Sound.createAsync(notificationSound);
+      soundRef.current = sound;
+      await sound.playAsync();
+
+      // Unload sound after playing
+      sound.setOnPlaybackStatusUpdate((status) => {
+        if (status.isLoaded && status.didJustFinish) {
+          sound.unloadAsync();
+        }
+      });
+    } catch (error) {
+      console.error("Ses çalma hatası:", error);
+    }
+  }, []);
 
   useEffect(() => {
     requestPermissions();
+
+    // Configure audio mode
+    if (Platform.OS !== "web") {
+      Audio.setAudioModeAsync({
+        allowsRecordingIOS: false,
+        playsInSilentModeIOS: true,
+        staysActiveInBackground: false,
+        shouldDuckAndroid: true,
+      });
+    }
+
+    // Cleanup sound on unmount
+    return () => {
+      if (soundRef.current) {
+        soundRef.current.unloadAsync();
+      }
+    };
   }, []);
 
   useEffect(() => {
     if (Platform.OS === "web") return;
 
-    const foregroundSubscription = Notifications.addNotificationReceivedListener(notification => {
+    const foregroundSubscription = Notifications.addNotificationReceivedListener(async (notification) => {
       console.log("📩 Foreground bildirim alındı:", notification.request.content);
+
+      // Play sound when notification received in foreground
+      await playNotificationSound();
+
       const { title, body } = notification.request.content;
       Alert.alert(title || "Gösteri Bildirimi", body || "", [{ text: "Tamam" }]);
     });
@@ -41,7 +90,7 @@ export const [NotificationProvider, useNotifications] = createContextHook(() => 
       foregroundSubscription.remove();
       backgroundSubscription.remove();
     };
-  }, []);
+  }, [playNotificationSound]);
 
   const requestPermissions = async () => {
     if (Platform.OS === "web") {
@@ -203,5 +252,6 @@ export const [NotificationProvider, useNotifications] = createContextHook(() => 
     permissionGranted,
     scheduleTestNotification,
     scheduleShowNotifications,
+    playNotificationSound,
   };
 });
