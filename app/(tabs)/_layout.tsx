@@ -95,7 +95,10 @@ export default function TabLayout() {
             borderTopWidth: 1,
             borderTopColor: "rgba(239, 68, 68, 0.2)",
             paddingTop: 8,
+            paddingHorizontal: 0,
             height: Platform.OS === "ios" ? 88 : 64,
+            flexDirection: "row",
+            justifyContent: "space-evenly",
           },
           tabBarLabelStyle: {
             fontSize: 10,
