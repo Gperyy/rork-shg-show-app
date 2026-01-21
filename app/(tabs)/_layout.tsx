@@ -1,6 +1,10 @@
 import { Tabs, usePathname, router } from "expo-router";
 import React, { useCallback, useRef, useMemo } from "react";
-import { Platform, View, PanResponder } from "react-native";
+import { Platform, View, PanResponder, Dimensions } from "react-native";
+
+const SCREEN_WIDTH = Dimensions.get("window").width;
+const TAB_COUNT = 5;
+const TAB_WIDTH = SCREEN_WIDTH / TAB_COUNT;
 
 import Colors from "@/constants/colors";
 import {
@@ -96,9 +100,10 @@ export default function TabLayout() {
             borderTopColor: "rgba(239, 68, 68, 0.2)",
             paddingTop: 8,
             paddingHorizontal: 0,
+            paddingLeft: 0,
+            paddingRight: 0,
+            marginHorizontal: 0,
             height: Platform.OS === "ios" ? 88 : 64,
-            flexDirection: "row",
-            justifyContent: "space-evenly",
           },
           tabBarLabelStyle: {
             fontSize: 10,
@@ -106,12 +111,12 @@ export default function TabLayout() {
             marginTop: 2,
           },
           tabBarItemStyle: {
-            flex: 1,
-            flexBasis: 0,
-            minWidth: 0,
+            width: TAB_WIDTH,
+            maxWidth: TAB_WIDTH,
+            minWidth: TAB_WIDTH,
             justifyContent: "center",
             alignItems: "center",
-            paddingHorizontal: 2,
+            paddingHorizontal: 0,
           },
         }}
       >
