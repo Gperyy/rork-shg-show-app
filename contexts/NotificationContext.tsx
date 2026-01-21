@@ -1,9 +1,13 @@
 import createContextHook from "@nkzw/create-context-hook";
 import * as Notifications from "expo-notifications";
-import { useEffect, useState, useCallback } from "react";
+import { Audio } from "expo-av";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { Platform, Alert } from "react-native";
 
 import { SCHEDULE_DATA } from "@/mocks/schedule";
+
+// Bildirim sesi için Audio objesi
+let notificationSound: Audio.Sound | null = null;
 
 if (Platform.OS !== "web") {
   Notifications.setNotificationHandler({
@@ -17,6 +21,42 @@ if (Platform.OS !== "web") {
   });
 }
 
+// Bildirim sesi çalma fonksiyonu
+const playNotificationSound = async () => {
+  try {
+    // Önceki sesi temizle
+    if (notificationSound) {
+      await notificationSound.unloadAsync();
+      notificationSound = null;
+    }
+
+    // Ses modunu ayarla
+    await Audio.setAudioModeAsync({
+      allowsRecordingIOS: false,
+      playsInSilentModeIOS: true,
+      staysActiveInBackground: true,
+      shouldDuckAndroid: true,
+    });
+
+    // Bildirim sesini yükle ve çal
+    const { sound } = await Audio.Sound.createAsync(
+      require("@/assets/sounds/notification.wav"),
+      { shouldPlay: true, volume: 1.0 }
+    );
+    notificationSound = sound;
+
+    // Ses bitince temizle
+    sound.setOnPlaybackStatusUpdate((status) => {
+      if ('didJustFinish' in status && status.didJustFinish) {
+        sound.unloadAsync();
+        notificationSound = null;
+      }
+    });
+  } catch (error) {
+    console.log("Bildirim sesi çalınamadı:", error);
+  }
+};
+
 export const [NotificationProvider, useNotifications] = createContextHook(() => {
   const [permissionGranted, setPermissionGranted] = useState<boolean>(false);
 
@@ -27,8 +67,12 @@ export const [NotificationProvider, useNotifications] = createContextHook(() => 
   useEffect(() => {
     if (Platform.OS === "web") return;
 
-    const foregroundSubscription = Notifications.addNotificationReceivedListener(notification => {
+    const foregroundSubscription = Notifications.addNotificationReceivedListener(async (notification) => {
       console.log("📩 Foreground bildirim alındı:", notification.request.content);
+
+      // Bildirim sesi çal
+      await playNotificationSound();
+
       const { title, body } = notification.request.content;
       Alert.alert(title || "Gösteri Bildirimi", body || "", [{ text: "Tamam" }]);
     });

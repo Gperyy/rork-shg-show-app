@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "SHG Show App",
-    "slug": "shg-show-app",
+    "name": "SHG Airshows",
+    "slug": "shg-airshows",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "rork-app",
+    "scheme": "shg-airshows",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
@@ -15,7 +15,7 @@
     },
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "app.rork.shg-show-app",
+      "bundleIdentifier": "app.shg.airshows",
       "usesAppleSignIn": true,
       "buildNumber": "7",
       "infoPlist": {
@@ -27,7 +27,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "app.rork.shg_show_app",
+      "package": "app.shg.airshows",
       "permissions": [
         "android.permission.RECEIVE_BOOT_COMPLETED",
         "android.permission.SCHEDULE_EXACT_ALARM"
