@@ -104,8 +104,11 @@ export default function TabLayout() {
           },
           tabBarItemStyle: {
             flex: 1,
+            flexBasis: 0,
+            minWidth: 0,
             justifyContent: "center",
             alignItems: "center",
+            paddingHorizontal: 2,
           },
         }}
       >
