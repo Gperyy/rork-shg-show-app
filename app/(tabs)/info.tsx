@@ -107,7 +107,7 @@ export default function InfoScreen() {
   };
 
   const handleEmail = () => {
-    Linking.openURL("mailto:info@shgairshow.com");
+    Linking.openURL("mailto:info@shm.aero");
   };
 
   const handleSocialMedia = (url: string) => {

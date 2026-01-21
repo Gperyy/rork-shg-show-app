@@ -82,7 +82,7 @@ export default function HomeScreen() {
 
           {/* Countdown Section - All Red */}
           <View style={styles.countdownWrapper}>
-            <Text style={styles.countdownTitle}>Geri Sayım</Text>
+            <Text style={styles.countdownTitle}>GERİ SAYIM</Text>
             <View style={styles.countdownContainer}>
               <CountdownBox value={timeLeft.days} label="GÜN" />
               <CountdownBox value={timeLeft.hours} label="SAAT" />
@@ -207,7 +207,6 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.semiBold,
     color: Colors.textSecondary,
     marginBottom: 12,
-    textTransform: "uppercase",
     letterSpacing: 1,
   },
   countdownContainer: {
