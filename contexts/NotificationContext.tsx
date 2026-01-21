@@ -7,7 +7,7 @@ import { Platform, Alert } from "react-native";
 import { SCHEDULE_DATA } from "@/mocks/schedule";
 
 // Notification sound
-const notificationSound = require("@/assets/sounds/notification.wav");
+const notificationSound = require("@/assets/sounds/yeni-menekse.wav");
 
 if (Platform.OS !== "web") {
   Notifications.setNotificationHandler({
@@ -109,7 +109,7 @@ export const [NotificationProvider, useNotifications] = createContextHook(() => 
 
       const granted = finalStatus === "granted";
       setPermissionGranted(granted);
-      
+
       console.log("\n🔔 BİLDİRİM İZİN DURUMU:");
       console.log("Mevcut izin:", existingStatus);
       console.log("Final izin:", finalStatus);
@@ -139,7 +139,7 @@ export const [NotificationProvider, useNotifications] = createContextHook(() => 
     try {
       console.log("\n🔔 BİLDİRİMLER PLANLANIYOR...");
       console.log("📅 Şu anki zaman:", new Date().toLocaleString());
-      
+
       await Notifications.cancelAllScheduledNotificationsAsync();
       console.log("🗑️ Eski bildirimler silindi");
 
@@ -154,7 +154,7 @@ export const [NotificationProvider, useNotifications] = createContextHook(() => 
         const startNotificationTime = new Date(year, month - 1, day, startHour, startMinute, 0, 0);
 
         const now = Date.now();
-        
+
         if (notificationTime.getTime() > now) {
           console.log(`✅ Planlanan: ${show.title} - ${notificationTime.toLocaleString()}`);
           await Notifications.scheduleNotificationAsync({
@@ -191,7 +191,7 @@ export const [NotificationProvider, useNotifications] = createContextHook(() => 
       const scheduled = await Notifications.getAllScheduledNotificationsAsync();
       console.log(`\n📊 Toplam ${scheduledCount} bildirim planlandı`);
       console.log("📋 Planlanan bildirim sayısı:", scheduled.length);
-      
+
       if (scheduled.length > 0) {
         console.log("\nİlk 3 bildirim:");
         scheduled.slice(0, 3).forEach(n => {
@@ -226,7 +226,7 @@ export const [NotificationProvider, useNotifications] = createContextHook(() => 
     try {
       console.log("\n🧪 TEST BİLDİRİMİ PLANLANIYOR...");
       console.log("Şu anki zaman:", new Date().toLocaleTimeString());
-      
+
       await Notifications.scheduleNotificationAsync({
         content: {
           title: "Test Bildirimi ✈️",
