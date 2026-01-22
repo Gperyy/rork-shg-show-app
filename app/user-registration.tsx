@@ -16,13 +16,27 @@ import { router } from "expo-router";
 
 import Colors from "@/constants/colors";
 import { useUser } from "@/contexts/UserContext";
+import { useNotifications } from "@/contexts/NotificationContext";
 import AppleSignInButton from "@/components/AppleSignInButton";
 
 export default function UserRegistrationScreen() {
   const { saveUser, saveAppleUser, isSavingApple } = useUser();
+  const { requestOneSignalPermission, linkUserToOneSignal } = useNotifications();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+
+  // OneSignal'a bağlan (kullanıcı kaydedildikten sonra çağrılır)
+  const setupOneSignal = async (userId: string) => {
+    try {
+      // Önce izin iste
+      await requestOneSignalPermission();
+      // Sonra kullanıcıyı bağla
+      await linkUserToOneSignal(userId);
+    } catch (error) {
+      console.warn("OneSignal setup hatası:", error);
+    }
+  };
 
   const handleAppleSignInSuccess = async (data: {
     appleUserId: string;
@@ -48,8 +62,12 @@ export default function UserRegistrationScreen() {
             : undefined,
         },
         {
-          onSuccess: () => {
+          onSuccess: (savedUser: any) => {
             console.log("✅ Apple Sign In successful");
+            // OneSignal'a bağlan
+            if (savedUser?.id) {
+              setupOneSignal(savedUser.id);
+            }
             router.replace("/(tabs)");
           },
           onError: (error: any) => {
@@ -94,13 +112,30 @@ export default function UserRegistrationScreen() {
       return;
     }
 
-    saveUser({
-      name: name.trim(),
-      email: email.trim(),
-      phone: phone.trim(),
-    });
-
-
+    saveUser(
+      {
+        name: name.trim(),
+        email: email.trim(),
+        phone: phone.trim(),
+      },
+      {
+        onSuccess: (savedUser: any) => {
+          console.log("✅ User registration successful");
+          // OneSignal'a bağlan
+          if (savedUser?.id) {
+            setupOneSignal(savedUser.id);
+          }
+          router.replace("/(tabs)");
+        },
+        onError: (error: any) => {
+          console.error("❌ Registration error:", error);
+          Alert.alert(
+            "Hata",
+            error.message || "Kayıt başarısız oldu. Lütfen tekrar deneyin."
+          );
+        },
+      }
+    );
   };
 
   return (

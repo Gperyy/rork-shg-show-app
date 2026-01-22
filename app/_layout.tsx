@@ -13,7 +13,7 @@ import {
 } from "@expo-google-fonts/inter";
 
 import { UserProvider, useUser } from "@/contexts/UserContext";
-import { NotificationProvider } from "@/contexts/NotificationContext";
+import { NotificationProvider, useNotifications } from "@/contexts/NotificationContext";
 import { trpc, trpcClient } from "@/lib/trpc";
 import LoadingScreen from "@/components/LoadingScreen";
 
@@ -23,9 +23,11 @@ const queryClient = new QueryClient();
 
 function RootLayoutNav() {
   const { user, isLoading } = useUser();
+  const { updateUserActivity, linkUserToOneSignal, requestOneSignalPermission } = useNotifications();
   const segments = useSegments();
   const router = useRouter();
   const [showLoadingScreen, setShowLoadingScreen] = useState(true);
+  const oneSignalSetupDone = React.useRef(false);
 
   useEffect(() => {
     if (isLoading) return;
@@ -41,6 +43,29 @@ function RootLayoutNav() {
       router.replace("/" as any);
     }
   }, [user, segments, isLoading, router]);
+
+  // Kullanıcı varsa aktiviteyi güncelle ve OneSignal'a bağlan
+  useEffect(() => {
+    if (!user?.id || oneSignalSetupDone.current) return;
+
+    const setupUserTracking = async () => {
+      try {
+        // Aktiviteyi güncelle
+        await updateUserActivity(user.id);
+
+        // OneSignal izni iste ve bağla (eğer daha önce yapılmadıysa)
+        await requestOneSignalPermission();
+        await linkUserToOneSignal(user.id);
+
+        oneSignalSetupDone.current = true;
+        console.log("✅ Kullanıcı tracking ve OneSignal kurulumu tamamlandı");
+      } catch (error) {
+        console.warn("Kullanıcı tracking hatası:", error);
+      }
+    };
+
+    setupUserTracking();
+  }, [user?.id, updateUserActivity, linkUserToOneSignal, requestOneSignalPermission]);
 
   const handleLoadingComplete = () => {
     setShowLoadingScreen(false);

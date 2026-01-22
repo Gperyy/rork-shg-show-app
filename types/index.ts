@@ -13,6 +13,7 @@ export interface User {
   name: string;
   email: string;
   phone?: string;
+  onesignal_player_id?: string;
 }
 
 export interface Participant {

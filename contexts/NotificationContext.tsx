@@ -5,6 +5,17 @@ import { useEffect, useState, useCallback, useRef } from "react";
 import { Platform, Alert } from "react-native";
 
 import { SCHEDULE_DATA } from "@/mocks/schedule";
+import { trpcClient } from "@/lib/trpc";
+import {
+  initializeOneSignal,
+  requestNotificationPermission,
+  getOneSignalPlayerId,
+  setExternalUserId,
+  setNotificationOpenedHandler,
+  setNotificationWillShowHandler,
+  addSubscriptionObserver,
+  addTag,
+} from "@/lib/onesignal";
 
 // Notification sound
 const notificationSound = require("../assets/sounds/yeni-menekse.wav");
@@ -23,7 +34,140 @@ if (Platform.OS !== "web") {
 
 export const [NotificationProvider, useNotifications] = createContextHook(() => {
   const [permissionGranted, setPermissionGranted] = useState<boolean>(false);
+  const [oneSignalReady, setOneSignalReady] = useState<boolean>(false);
+  const [playerId, setPlayerId] = useState<string | null>(null);
   const soundRef = useRef<Audio.Sound | null>(null);
+  const oneSignalInitialized = useRef<boolean>(false);
+
+  // OneSignal'ı başlat
+  useEffect(() => {
+    if (Platform.OS === "web" || oneSignalInitialized.current) return;
+
+    try {
+      initializeOneSignal();
+      oneSignalInitialized.current = true;
+      setOneSignalReady(true);
+      console.log("✅ OneSignal context'te başlatıldı");
+
+      // Player ID değişikliklerini dinle
+      addSubscriptionObserver((newPlayerId) => {
+        console.log("🔄 Player ID güncellendi:", newPlayerId);
+        setPlayerId(newPlayerId);
+      });
+
+      // Bildirim açıldığında
+      setNotificationOpenedHandler(async (notificationId, data) => {
+        console.log("📩 OneSignal bildirim açıldı:", notificationId, data);
+
+        // Event'i track et
+        try {
+          await trpcClient.notifications.trackEvent.mutate({
+            eventType: "opened",
+            notificationId,
+            campaignName: (data?.campaign as string) || undefined,
+            metadata: data,
+          });
+        } catch (error) {
+          console.warn("Event tracking hatası:", error);
+        }
+      });
+
+      // Foreground'da bildirim geldiğinde
+      setNotificationWillShowHandler((notification) => {
+        console.log("📬 OneSignal foreground bildirim:", notification);
+      });
+    } catch (error) {
+      console.error("❌ OneSignal başlatma hatası:", error);
+    }
+  }, []);
+
+  // OneSignal izni iste ve Player ID al
+  const requestOneSignalPermission = useCallback(async (): Promise<string | null> => {
+    if (Platform.OS === "web") return null;
+
+    try {
+      const granted = await requestNotificationPermission();
+      console.log("🔔 OneSignal izin durumu:", granted);
+
+      if (granted) {
+        // Biraz bekle, subscription hazır olsun
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        const id = await getOneSignalPlayerId();
+        setPlayerId(id);
+        return id;
+      }
+      return null;
+    } catch (error) {
+      console.error("❌ OneSignal izin hatası:", error);
+      return null;
+    }
+  }, []);
+
+  // Kullanıcıyı OneSignal'a bağla
+  const linkUserToOneSignal = useCallback(async (userId: string): Promise<boolean> => {
+    if (Platform.OS === "web") return false;
+
+    try {
+      // External user ID ayarla
+      setExternalUserId(userId);
+
+      // Player ID'yi al
+      let currentPlayerId = playerId;
+      if (!currentPlayerId) {
+        currentPlayerId = await getOneSignalPlayerId();
+        setPlayerId(currentPlayerId);
+      }
+
+      if (!currentPlayerId) {
+        console.warn("⚠️ Player ID alınamadı");
+        return false;
+      }
+
+      // Supabase'e kaydet
+      await trpcClient.notifications.updatePlayerId.mutate({
+        userId,
+        playerId: currentPlayerId,
+      });
+
+      console.log("✅ Kullanıcı OneSignal'a bağlandı:", userId);
+
+      // Tag ekle
+      addTag("registered", "true");
+
+      return true;
+    } catch (error) {
+      console.error("❌ OneSignal kullanıcı bağlama hatası:", error);
+      return false;
+    }
+  }, [playerId]);
+
+  // Notification event track et
+  const trackNotificationEvent = useCallback(async (
+    eventType: "clicked_ticket" | "purchase_yes" | "purchase_no" | "purchase_later",
+    campaignName?: string,
+    metadata?: Record<string, unknown>
+  ) => {
+    try {
+      await trpcClient.notifications.trackEvent.mutate({
+        eventType,
+        campaignName,
+        metadata,
+      });
+      console.log("📊 Event tracked:", eventType);
+    } catch (error) {
+      console.warn("Event tracking hatası:", error);
+    }
+  }, []);
+
+  // Kullanıcı aktivitesini güncelle
+  const updateUserActivity = useCallback(async (userId: string) => {
+    try {
+      await trpcClient.notifications.updateActivity.mutate({ userId });
+      console.log("📈 Aktivite güncellendi");
+    } catch (error) {
+      console.warn("Aktivite güncelleme hatası:", error);
+    }
+  }, []);
 
   // Play notification sound
   const playNotificationSound = useCallback(async () => {
@@ -249,9 +393,18 @@ export const [NotificationProvider, useNotifications] = createContextHook(() => 
   };
 
   return {
+    // Expo Notifications (local scheduled)
     permissionGranted,
     scheduleTestNotification,
     scheduleShowNotifications,
     playNotificationSound,
+
+    // OneSignal (push notifications)
+    oneSignalReady,
+    playerId,
+    requestOneSignalPermission,
+    linkUserToOneSignal,
+    trackNotificationEvent,
+    updateUserActivity,
   };
 });
