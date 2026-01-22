@@ -63,7 +63,8 @@ export const getOneSignalPlayerId = async (): Promise<string | null> => {
   }
 
   try {
-    const subscriptionId = OneSignal.User.pushSubscription.getPushSubscriptionId();
+    // SDK v5 için getIdAsync kullan
+    const subscriptionId = await OneSignal.User.pushSubscription.getIdAsync();
     console.log("📱 OneSignal Player ID:", subscriptionId);
     return subscriptionId || null;
   } catch (error) {
