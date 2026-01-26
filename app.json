@@ -17,10 +17,11 @@
       "supportsTablet": false,
       "bundleIdentifier": "app.rork.shg-show-app",
       "usesAppleSignIn": true,
-      "buildNumber": "8",
+      "buildNumber": "9",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
-      }
+      },
+      "appleTeamId": "3AZ7X89KV7"
     },
     "android": {
       "adaptiveIcon": {
