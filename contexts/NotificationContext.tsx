@@ -310,7 +310,7 @@ export const [NotificationProvider, useNotifications] = createContextHook(() => 
               title: "Gösteri Başlıyor! ✈️",
               body: `${show.title} 1 dakika içinde başlayacak!`,
               data: { showId: show.id },
-              sound: Platform.OS === 'ios' ? 'yeni-menekse.wav' : true,
+              sound: Platform.OS === 'ios' ? 'yeni-menekse.caf' : true,
               priority: Notifications.AndroidNotificationPriority.HIGH,
             },
             trigger: { type: Notifications.SchedulableTriggerInputTypes.DATE, date: notificationTime },
@@ -327,7 +327,7 @@ export const [NotificationProvider, useNotifications] = createContextHook(() => 
               title: "🎯 Gösteri Başladı!",
               body: `${show.title} şimdi başladı!`,
               data: { showId: show.id },
-              sound: Platform.OS === 'ios' ? 'yeni-menekse.wav' : true,
+              sound: Platform.OS === 'ios' ? 'yeni-menekse.caf' : true,
               priority: Notifications.AndroidNotificationPriority.HIGH,
             },
             trigger: { type: Notifications.SchedulableTriggerInputTypes.DATE, date: startNotificationTime },
@@ -379,7 +379,7 @@ export const [NotificationProvider, useNotifications] = createContextHook(() => 
         content: {
           title: "Test Bildirimi ✈️",
           body: "Bildirimler başarıyla çalışıyor!",
-          sound: Platform.OS === 'ios' ? 'yeni-menekse.wav' : true,
+          sound: Platform.OS === 'ios' ? 'yeni-menekse.caf' : true,
         },
         trigger: { type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL, seconds: 5 },
       });

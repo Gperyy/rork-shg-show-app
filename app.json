@@ -17,7 +17,7 @@
       "supportsTablet": false,
       "bundleIdentifier": "app.rork.shg-show-app",
       "usesAppleSignIn": true,
-      "buildNumber": "10",
+      "buildNumber": "11",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       },
@@ -39,6 +39,23 @@
     },
     "plugins": [
       [
+        "expo-build-properties",
+        {
+          "ios": {
+            "extraPods": [
+              {
+                "name": "notification-sound",
+                "path": "./assets/sounds",
+                "configurations": [
+                  "Debug",
+                  "Release"
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      [
         "expo-router",
         {
           "origin": "https://rork.com/"
@@ -52,7 +69,10 @@
           "icon": "./local/assets/notification_icon.png",
           "color": "#ffffff",
           "defaultChannel": "default",
-          "enableBackgroundRemoteNotifications": true
+          "enableBackgroundRemoteNotifications": true,
+          "sounds": [
+            "./assets/sounds/yeni-menekse.caf"
+          ]
         }
       ],
       [
