@@ -1,7 +1,7 @@
 import createContextHook from "@nkzw/create-context-hook";
 import * as Notifications from "expo-notifications";
 import { Audio } from "expo-av";
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useCallback, useRef, SetStateAction } from "react";
 import { Platform, Alert } from "react-native";
 
 import { SCHEDULE_DATA } from "@/mocks/schedule";
@@ -50,13 +50,13 @@ export const [NotificationProvider, useNotifications] = createContextHook(() => 
       console.log("✅ OneSignal context'te başlatıldı");
 
       // Player ID değişikliklerini dinle
-      addSubscriptionObserver((newPlayerId) => {
+      addSubscriptionObserver((newPlayerId: string | null) => {
         console.log("🔄 Player ID güncellendi:", newPlayerId);
         setPlayerId(newPlayerId);
       });
 
       // Bildirim açıldığında
-      setNotificationOpenedHandler(async (notificationId, data) => {
+      setNotificationOpenedHandler(async (notificationId: string, data: Record<string, unknown>) => {
         console.log("📩 OneSignal bildirim açıldı:", notificationId, data);
 
         // Event'i track et
@@ -73,7 +73,11 @@ export const [NotificationProvider, useNotifications] = createContextHook(() => 
       });
 
       // Foreground'da bildirim geldiğinde
-      setNotificationWillShowHandler((notification) => {
+      setNotificationWillShowHandler((notification: {
+        title: string;
+        body: string;
+        data: Record<string, unknown>;
+      }) => {
         console.log("📬 OneSignal foreground bildirim:", notification);
       });
     } catch (error) {
