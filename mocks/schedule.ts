@@ -4,8 +4,8 @@ export const SCHEDULE_DATA: Show[] = [
   {
     id: "test1",
     title: "Test Gösteri 1",
-    time: "00:20",
-    endTime: "00:21",
+    time: "00:40",
+    endTime: "00:41",
     description: "Bildirim test gösterisi 1",
     category: "Demo",
     date: "2026-01-27",
@@ -13,8 +13,8 @@ export const SCHEDULE_DATA: Show[] = [
   {
     id: "test2",
     title: "Test Gösteri 2",
-    time: "00:21",
-    endTime: "00:22",
+    time: "00:41",
+    endTime: "00:42",
     description: "Bildirim test gösterisi 2",
     category: "Akrobasi",
     date: "2026-01-27",
@@ -22,10 +22,19 @@ export const SCHEDULE_DATA: Show[] = [
   {
     id: "test3",
     title: "Test Gösteri 3",
-    time: "00:22",
-    endTime: "00:23",
+    time: "00:42",
+    endTime: "00:43",
     description: "Bildirim test gösterisi 3",
     category: "Demo",
+    date: "2026-01-27",
+  },
+  {
+    id: "test4",
+    title: "Test Gösteri 4",
+    time: "00:43",
+    endTime: "00:44",
+    description: "Bildirim test gösterisi 4",
+    category: "Akrobasi",
     date: "2026-01-27",
   },
   {
