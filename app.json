@@ -39,23 +39,6 @@
     },
     "plugins": [
       [
-        "expo-build-properties",
-        {
-          "ios": {
-            "extraPods": [
-              {
-                "name": "notification-sound",
-                "path": "./assets/sounds",
-                "configurations": [
-                  "Debug",
-                  "Release"
-                ]
-              }
-            ]
-          }
-        }
-      ],
-      [
         "expo-router",
         {
           "origin": "https://rork.com/"
